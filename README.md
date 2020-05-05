@@ -21,5 +21,5 @@ card_img
 
 Example:
 ```
-/usr/local/bin/autopkg run <your_recipe_list> --post="com.github.jmp.autopkg-recipes.postprocessors/Chatter" --key webhook_url="Your_Chat_webhook" --key card_img="your_preferred_img"
+/usr/local/bin/autopkg run <your_recipe_list> --post="com.github.johnmikep.autopkg-recipes.postprocessors/Chatter" --key webhook_url="Your_Chat_webhook" --key card_img="your_preferred_img"
 ```
