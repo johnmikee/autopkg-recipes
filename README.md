@@ -10,7 +10,7 @@ This is based on the Slack notification post-processor for AutoPkg/JSSImporter t
 https://grahamrpugh.com/2017/12/22/slack-for-autopkg-jssimporter.html
 Which inspired Slacker https://github.com/notverypc/autopkg-recipes/blob/master/PostProcessors/Slacker.py
 Which contains all the good bits this Post Processor uses. 
-It is just a port from Slack to Google Chat.
+This is just a port from Slack to Google Chat.
 
 ### Customising notifications:
 Change the following values to match your environment or pass them as environmental variables.
