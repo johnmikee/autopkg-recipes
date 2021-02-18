@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <key>Description</key>
+    <string></string>
+    <key>Identifier</key>
+    <string>com.github.forvitinn.autopkg-recipes.munki.oxygenDeveloper</string>
+    <key>Input</key>
+    <dict>
+      <key>MUNKI_REPO_SUBDIR</key>
+      <string>%NAME%</string>
+      <key>NAME</key>
+      <string>Oxygen_XML_Developer</string>
+      <key>pkginfo</key>
+      <dict>
+        <key>catalogs</key>
+        <array>
+          <string>testing</string>
+        </array>
+        <key>category</key>
+        <string>Software Development</string>
+        <key>description</key>
+        <string>Oxygen XML Developer is the class leading tool dedicated to XML development, focusing on XML source editing, Schema design and XSLT editing/debugging. It offers powerful support to help you edit, transform, and debug XML based documents, making XML development easy and effective. A WSDL editor is also available, providing a specialized Content Completion Assistant and Outline view, along with many other helpful features.</string>
+        <key>developer</key>
+        <string>SyncRO Soft SRL</string>
+        <key>display_name</key>
+        <string>Oxygen XML Devloper</string>
+        <key>name</key>
+        <string>%NAME%</string>
+        <key>preinstall_script</key>
+        <string>#!/bin/sh
+# New versions of oXygen should not be installed over old versions, so remove
+# the old version first
+if pkgutil --files %PKGID% 2>/dev/null | grep -q Applications/Oxygen/
+then
+    rm -rf /Applications/Oxygen
+    pkgutil --forget %PKGID%
+fi
+exit 0
+        </string>
+        <key>unattended_install</key>
+        <true/>
+      </dict>
+    </dict>
+    <key>MinimumVersion</key>
+    <string>0.2.0</string>
+    <key>ParentRecipe</key>
+    <string>com.github.forvitinn.autopkg-recipes.pkg.oxygenDeveloper</string>
+    <key>Process</key>
+    <array>
+      <dict>
+        <key>Processor</key>
+        <string>MunkiImporter</string>
+        <key>Arguments</key>
+        <dict>
+          <key>pkg_path</key>
+          <string>%pkg_path%</string>
+          <key>repo_subdirectory</key>
+          <string>%MUNKI_REPO_SUBDIR%</string>
+        </dict>
+      </dict>
+    </array>
+  </dict>
+</plist>
