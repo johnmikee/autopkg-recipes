@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
+<dict>
     <key>Description</key>
     <string></string>
     <key>Identifier</key>
-    <string>com.github.forvitinn.autopkg-recipes.munki.oxygenDeveloper</string>
+    <string>com.github.johnmikee.munki.oxygenDeveloper</string>
     <key>Input</key>
     <dict>
       <key>MUNKI_REPO_SUBDIR</key>
@@ -45,7 +46,7 @@ exit 0
     <key>MinimumVersion</key>
     <string>0.2.0</string>
     <key>ParentRecipe</key>
-    <string>com.github.forvitinn.autopkg-recipes.pkg.oxygenDeveloper</string>
+    <string>com.github.johnmikee.pkg.oxygenDeveloper</string>
     <key>Process</key>
     <array>
       <dict>
