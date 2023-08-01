@@ -1,55 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple/DTD PLIST 1.0//EN" "http://apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-<dict>
-  <key>Description</key>
-  <string>Downloads the latest version of oXygen Developer</string>
-  <key>Identifier</key>
-  <string>com.github.forvitinn.autopkg-recipes.download.oxygenDeveloper</string>
-  <key>Input</key>
   <dict>
-    <key>SITE</key>
-    <string>https://www.oxygenxml.com</string>
-    <key>DOWNLOAD_PAGE</key>
-    <string>https://www.oxygenxml.com/xml_developer/download_oxygenxml_developer.html?os=MacOSX</string>
-    <key>NAME</key>
-    <string>Oxygen_XML_Developer</string>
+    <key>Description</key>
+    <string>Downloads the latest version of oXygen Developer</string>
+    <key>Identifier</key>
+    <string>com.github.johnmikee.download.oxygenDeveloper</string>
+    <key>Input</key>
+    <dict>
+      <key>SITE</key>
+      <string>https://www.oxygenxml.com</string>
+      <key>DOWNLOAD_PAGE</key>
+      <string>https://www.oxygenxml.com/xml_developer/download_oxygenxml_developer.html?os=MacOSX</string>
+      <key>NAME</key>
+      <string>Oxygen_XML_Developer</string>
+    </dict>
+    <key>MinimumVersion</key>
+    <string>0.2.0</string>
+    <key>Process</key>
+    <array>
+      <dict>
+        <key>Processor</key>
+        <string>URLTextSearcher</string>
+        <key>Arguments</key>
+        <dict>
+          <key>url</key>
+          <string>%DOWNLOAD_PAGE%</string>
+          <key>re_pattern</key>
+          <string>
+            <![CDATA[macOS.+?Version: (?P<version>[\d\.]+).+href='/download_thanks.html\?url=.*(?P<urlpath>/InstData.+oxygen-openjdk.dmg)]]>
+          </string>
+          <key>re_flags</key>
+          <array>
+            <string>MULTILINE</string>
+            <string>DOTALL</string>
+          </array>
+        </dict>
+      </dict>
+      <dict>
+        <key>Processor</key>
+        <string>URLDownloader</string>
+        <key>Arguments</key>
+        <dict>
+          <key>url</key>
+          <string>https://mirror.oxygenxml.com%urlpath%</string>
+          <key>filename</key>
+          <string>%NAME%-%version%.dmg</string>
+        </dict>
+      </dict>
+      <dict>
+        <key>Processor</key>
+        <string>EndOfCheckPhase</string>
+      </dict>
+    </array>
   </dict>
-  <key>MinimumVersion</key>
-  <string>0.2.0</string>
-  <key>Process</key>
-  <array>
-    <dict>
-      <key>Processor</key>
-      <string>URLTextSearcher</string>
-      <key>Arguments</key>
-      <dict>
-        <key>url</key>
-        <string>%DOWNLOAD_PAGE%</string>
-        <key>re_pattern</key>
-        <string><![CDATA[macOS.+?Version: (?P<version>[\d\.]+).+href='/download_thanks.html\?url=.*(?P<urlpath>/InstData.+oxygen-openjdk.dmg)]]></string>
-            <key>re_flags</key>
-            <array>
-              <string>MULTILINE</string>
-              <string>DOTALL</string>
-            </array>
-      </dict>
-    </dict>
-    <dict>
-      <key>Processor</key>
-      <string>URLDownloader</string>
-      <key>Arguments</key>
-      <dict>
-        <key>url</key>
-        <string>https://mirror.oxygenxml.com%urlpath%</string>
-        <key>filename</key>
-        <string>%NAME%-%version%.dmg</string>
-      </dict>
-    </dict>
-    <dict>
-      <key>Processor</key>
-      <string>EndOfCheckPhase</string>
-    </dict>
-  </array>
-</dict> 
 </plist>
