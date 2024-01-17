@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>Description</key>
-	<string>Downloads the latest version of ./formal and imports it into Munki.</string>
+	<string>Downloads the latest version of formal and imports it into Munki.</string>
 	<key>Identifier</key>
 	<string>com.github.johnmikee.munki.formal</string>
 	<key>Input</key>
@@ -30,10 +30,6 @@
 			<string>%NAME%</string>
 			<key>unattended_install</key>
 			<true/>
-			<key>version</key>
-			<string>%VERSIONf%</string>
-			<key>icon_name</key>
-			<string>FormalApp.png</string>
 		</dict>
 	</dict>
 	<key>MinimumVersion</key>
