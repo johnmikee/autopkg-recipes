@@ -14,8 +14,6 @@
 		<string>apps/%NAME%</string>
 		<key>NAME</key>
 		<string>formal</string>
-		<key>VERSION</key>
-		<string>%version%</string>
 		<key>pkginfo</key>
 		<dict>
 			<key>catalogs</key>
@@ -32,6 +30,8 @@
 			<string>%NAME%</string>
 			<key>unattended_install</key>
 			<true/>
+			<key>version</key>
+			<string>%VERSIONf%</string>
 			<key>icon_name</key>
 			<string>FormalApp.png</string>
 		</dict>
