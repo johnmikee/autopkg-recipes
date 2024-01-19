@@ -30,6 +30,108 @@
 			<string>%NAME%</string>
 			<key>unattended_install</key>
 			<true/>
+			<key>postinstall_script</key>
+			<string>#!/bin/sh
+
+		APP_PATH="/Applications/Formal.app"
+
+		CONSOLE_USER=$( echo "show State:/Users/ConsoleUser" | scutil | awk '/Name :/ &amp;&amp; ! /loginwindow/ { print $3 }' )
+		CONSOLE_USER_UID=$(id -u "$CONSOLE_USER")
+
+		LAUNCH_AGENT_PATH="/Library/LaunchAgents/"
+		LAUNCH_AGENT_DOMAIN="com.formal.agent"
+		LAUNCH_AGENT_PLIST="${LAUNCH_AGENT_PATH}${LAUNCH_AGENT_DOMAIN}.plist"
+
+		loader() { # $1: load/unload
+			echo "${1}ing launch agent"
+			launchctl asuser $CONSOLE_USER_UID launchctl "$1" $LAUNCH_AGENT_PLIST
+		}
+
+		## check if the launch agent is running and load it if not
+		launchctl asuser $CONSOLE_USER_UID launchctl list | grep $LAUNCH_AGENT_DOMAIN &gt; /dev/null 2&gt;&amp;1
+		if [ $? -eq 0 ]; then
+			echo "formal is running"
+		else
+			echo "formal is not running"
+			loader load
+		fi
+
+		## remove the quarantine attribute
+		echo "removing quarantine attribute from $APP_PATH"
+		xattr -d -r com.apple.quarantine "$APP_PATH"
+
+		exit 0
+		</string>
+			<key>preinstall_script</key>
+			<string>#!/bin/sh
+
+		APP_PATH="/Applications/Formal.app"
+
+		LAUNCH_AGENT_PATH="/Library/LaunchAgents/"
+		LAUNCH_AGENT_DOMAIN="com.formal.agent"
+		LAUNCH_AGENT_PLIST="${LAUNCH_AGENT_PATH}${LAUNCH_AGENT_DOMAIN}.plist"
+		LAUNCH_AGENT_CONTENTS='&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+		&lt;!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"&gt;
+		&lt;plist version="1.0"&gt;
+		&lt;dict&gt;
+			&lt;key&gt;Label&lt;/key&gt;
+			&lt;string&gt;com.formal.agent&lt;/string&gt;
+			&lt;key&gt;LimitLoadToSessionType&lt;/key&gt;
+			&lt;string&gt;Aqua&lt;/string&gt;
+			&lt;key&gt;ProgramArguments&lt;/key&gt;
+			&lt;array&gt;
+				&lt;string&gt;open&lt;/string&gt;
+				&lt;string&gt;-jg&lt;/string&gt;
+				&lt;string&gt;-a&lt;/string&gt;
+				&lt;string&gt;/Applications/Formal.app&lt;/string&gt;
+			&lt;/array&gt;
+			&lt;key&gt;KeepAlive&lt;/key&gt;
+			&lt;true/&gt;
+			&lt;key&gt;RunAtLoad&lt;/key&gt;
+			&lt;true/&gt;
+			&lt;key&gt;StandardOutPath&lt;/key&gt;
+			&lt;string&gt;/tmp/formal-la.stdout&lt;/string&gt;
+			&lt;key&gt;StandardErrorPath&lt;/key&gt;
+			&lt;string&gt;/tmp/formal-la.stderr&lt;/string&gt;
+		&lt;/dict&gt;
+		&lt;/plist&gt;'
+
+		CONSOLE_USER=$( echo "show State:/Users/ConsoleUser" | scutil | awk '/Name :/ &amp;&amp; ! /loginwindow/ { print $3 }' )
+		CONSOLE_USER_UID=$(id -u "$CONSOLE_USER")
+
+		create_launch_agent() { # create launch agent and set permissions
+			echo "creating launch agent"
+			echo "$LAUNCH_AGENT_CONTENTS" &gt; $LAUNCH_AGENT_PLIST
+			chown root:wheel $LAUNCH_AGENT_PLIST
+			chmod 644 $LAUNCH_AGENT_PLIST
+		}
+
+		loader() { # $1: load/unload
+			echo "${1}ing launch agent"
+			launchctl asuser $CONSOLE_USER_UID launchctl "$1" $LAUNCH_AGENT_PLIST
+		}
+
+		## check if the launch agent exists
+		if [ ! -f $LAUNCH_AGENT_PLIST ]; then
+			create_launch_agent
+		fi
+
+		## check if the launch agent is running
+		launchctl asuser $CONSOLE_USER_UID launchctl list | grep $LAUNCH_AGENT_DOMAIN &gt; /dev/null 2&gt;&amp;1
+		if [ $? -eq 0 ]; then
+			echo "formal is running"
+			loader unload
+			kill -9 $(ps aux | grep Formal | grep -v grep | awk '{print $2}')
+		fi
+
+		# check if the app is installed and remove it if it is
+		if [ -d "$APP_PATH" ]; then
+			echo "removing $APP_PATH"
+			rm -rf "$APP_PATH"
+		fi
+
+		exit 0
+		</string>
 		</dict>
 	</dict>
 	<key>MinimumVersion</key>
