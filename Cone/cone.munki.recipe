@@ -9,7 +9,7 @@
 	<key>Input</key>
 	<dict>
 		<key>MUNKI_REPO_SUBDIR</key>
-		<string>utilities</string>
+		<string>apps</string>
 		<key>NAME</key>
 		<string>cone</string>
 		<key>pkginfo</key>
@@ -33,44 +33,79 @@
 	<key>MinimumVersion</key>
 	<string>0.6.1</string>
 	<key>ParentRecipe</key>
-	<string>com.github.johnmikee.download.cone</string>
-	<key>Process</key>
-	<array>
-		<dict>
-			<key>Arguments</key>
-			<dict>
-				<key>archive_path</key>
-				<string>%pathname%</string>
-				<key>destination_path</key>
-				<string>%RECIPE_CACHE_DIR%/%NAME%/Applications</string>
-				<key>purge_destination</key>
-				<true/>
-			</dict>
-			<key>Processor</key>
-			<string>Unarchiver</string>
-		</dict>
-		<dict>
-			<key>Arguments</key>
-			<dict>
-				<key>dmg_path</key>
-				<string>%RECIPE_CACHE_DIR%/%NAME%.dmg</string>
-				<key>dmg_root</key>
-				<string>%RECIPE_CACHE_DIR%/%NAME%/Applications/terminal-notifier.app</string>
-			</dict>
-			<key>Processor</key>
-			<string>DmgCreator</string>
-		</dict>
-		<dict>
-			<key>Arguments</key>
-			<dict>
-				<key>pkg_path</key>
-				<string>%dmg_path%</string>
-				<key>repo_subdirectory</key>
-				<string>%MUNKI_REPO_SUBDIR%</string>
-			</dict>
-			<key>Processor</key>
-			<string>MunkiImporter</string>
-		</dict>
-	</array>
+	<string>com.github.johnmikee.pkg.cone</string>
+    <key>Process</key>
+    <array>
+        <dict>
+            <key>Processor</key>
+            <string>MunkiPkginfoMerger</string>
+            <key>Arguments</key>
+            <dict>
+                <key>additional_pkginfo</key>
+                <dict>
+                    <key>installcheck_script</key>
+                    <string>#!/usr/local/munki/munki-python
+
+from distutils.version import LooseVersion
+import os
+import subprocess
+import sys
+import warnings
+
+# munki doesnt have packaging, so we need to ignore the warning
+warnings.filterwarnings("ignore",category=DeprecationWarning)
+
+def main():
+    '''
+        Returns the the version from cone
+
+        Non-0 exit means cone is at or above the version in munki.
+    '''
+
+    cone_path = '/usr/local/bin/cone'
+    munki_version = '0.0.15'
+    binary_version = None
+
+    if os.path.isfile(cone_path):
+        try:
+            binary_version = subprocess.check_output([cone_path, '-v']
+                                                    ).split()[2].decode('utf-8')
+        except subprocess.CalledProcessError:
+            print("encountered an error when grabbing the cone version, "
+                  "proceeding with install...")
+            sys.exit(0)
+
+    else:
+        print("cannot find {}, installing...".format(cone_path))
+        sys.exit(0)
+
+    # check local version against munki_version
+    if LooseVersion(binary_version) &lt; LooseVersion(munki_version):
+        print("older version of cone found, installing...")
+        sys.exit(0)
+    print("version of cone is the same or newer than the munki version, skipping...")
+    sys.exit(1)
+
+
+if __name__ == '__main__':
+    main()
+</string>
+                    <key>version</key>
+                    <string>%version%</string>
+                </dict>
+            </dict>
+        </dict>
+        <dict>
+            <key>Processor</key>
+            <string>MunkiImporter</string>
+            <key>Arguments</key>
+            <dict>
+                <key>pkg_path</key>
+                <string>%pkg_path%</string>
+                <key>repo_subdirectory</key>
+                <string>%MUNKI_REPO_SUBDIR%</string>
+            </dict>
+        </dict>
+    </array>
 </dict>
 </plist>
