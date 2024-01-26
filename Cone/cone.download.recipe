@@ -3,13 +3,19 @@
 <plist version="1.0">
 <dict>
 	<key>Description</key>
-	<string>Downloads the latest version of cone.</string>
+	<string>Downloads the latest version of cone.
+For the ARCH_TYPE variable use
+
+- arm for Apple Silicon
+- amd for Intel
 	<key>Identifier</key>
 	<string>com.github.johnmikee.download.cone</string>
 	<key>Input</key>
 	<dict>
 		<key>NAME</key>
 		<string>cone</string>
+        <key>ARCH_TYPE</key>
+        <string>arm</string>
 	</dict>
 	<key>MinimumVersion</key>
 	<string>0.6.1</string>
@@ -21,7 +27,7 @@
 				<key>github_repo</key>
 				<string>ConductorOne/cone</string>
 				<key>asset_regex</key>
-				<string>cone-v\d+\.\d+\.\d+-darwin-amd64\.zip</string>
+				<string>cone-v\d+\.\d+\.\d+-darwin-%ARCH_TYPE%64\.zip</string>
 			</dict>
 			<key>Processor</key>
 			<string>GitHubReleasesInfoProvider</string>
@@ -78,7 +84,7 @@
                 <key>input_path</key>
                 <string>%RECIPE_CACHE_DIR%/%NAME%/usr/local/bin/cone</string>
                 <key>requirement</key>
-				<string>identifier cone and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "858DKH55XL"</string>
+                <string>identifier cone and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "858DKH55XL"</string>
             </dict>
         </dict>
 	</array>
